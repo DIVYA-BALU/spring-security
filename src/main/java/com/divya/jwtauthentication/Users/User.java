@@ -1,4 +1,4 @@
-package com.divya.Users;
+package com.divya.jwtauthentication.Users;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,10 +30,6 @@ public class User implements UserDetails {
     private String password;
     @Field(targetType = FieldType.STRING)
     private Role role;
-
-    public String getFirstname() {
-        return firstname;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

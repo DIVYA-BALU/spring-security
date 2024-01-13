@@ -1,4 +1,4 @@
-package com.divya.Auth;
+package com.divya.jwtauthentication.Auth;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping(path = "/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 

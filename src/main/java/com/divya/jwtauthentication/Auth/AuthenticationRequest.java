@@ -1,4 +1,4 @@
-package com.divya.Auth;
+package com.divya.jwtauthentication.Auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AuthenticationRequest {
     private String email;
     private String password;

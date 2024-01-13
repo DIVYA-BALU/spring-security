@@ -1,4 +1,4 @@
-package com.divya.Controller;
+package com.divya.jwtauthentication.Controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequestMapping("/api/demo")
 public class DemoController {
 
-    @GetMapping("hello")
+    @GetMapping("/hello")
     public ResponseEntity<String> greet() {
-        return ResponseEntity.ok("Hello");
+        return ResponseEntity.ok("Hello from secured endpoint");
     }
 
 }

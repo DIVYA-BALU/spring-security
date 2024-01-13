@@ -1,15 +1,14 @@
-package com.divya.Auth;
+package com.divya.jwtauthentication.Auth;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.divya.Repository.UserRepository;
-import com.divya.Service.JwtService;
-import com.divya.Users.Role;
-import com.divya.Auth.AuthenticationResponse;
+import com.divya.jwtauthentication.Repository.UserRepository;
+import com.divya.jwtauthentication.Service.JwtService;
+import com.divya.jwtauthentication.Users.Role;
+import com.divya.jwtauthentication.Users.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +29,7 @@ public class AuthenticationService {
                                 .password(passwordEncoder.encode(request.getPassword()))
                                 .role(Role.USER)
                                 .build();
-                var savedUser = userRepository.save(user);
+                userRepository.save(user);
                 var jwt = jwtService.generateToken(user);
                 return AuthenticationResponse.builder()
                                 .token(jwt)

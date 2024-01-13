@@ -1,11 +1,11 @@
-package com.divya.Service;
+package com.divya.jwtauthentication.Service;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import javax.crypto.SecretKey;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class JwtService {
-    private static final String SECRET_KEY = "C2380E01ED58E828F5DFB2EFDB45ECE23262E6217CE55500584DCE78862F97F3";
+    private static final String SECURITY_KEY = "C2380E01ED58E828F5DFB2EFDB45ECE23262E6217CE55500584DCE78862F97F3";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -66,8 +66,8 @@ public class JwtService {
                 .getBody();
     }
 
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+    private Key getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(SECURITY_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

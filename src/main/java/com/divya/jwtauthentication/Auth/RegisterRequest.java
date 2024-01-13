@@ -1,4 +1,4 @@
-package com.divya.Auth;
+package com.divya.jwtauthentication.Auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

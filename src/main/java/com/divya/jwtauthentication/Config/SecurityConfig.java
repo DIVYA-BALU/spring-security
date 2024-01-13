@@ -1,4 +1,4 @@
-package com.divya.Config;
+package com.divya.jwtauthentication.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ public class SecurityConfig {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/auth/**")
+                        .requestMatchers("api/auth/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
