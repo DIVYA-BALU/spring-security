@@ -11,6 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -28,7 +29,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("api/auth/**")
-                        .permitAll()
+                        .permitAll()                
                         .anyRequest()
                         .authenticated())
                 .sessionManagement(management -> management
@@ -36,9 +37,9 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout
-                .logoutUrl("api/auth/logout")
-                .addLogoutHandler(logoutHandler)
-                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+                    .logoutUrl("/api/auth/logout")
+                    .addLogoutHandler(logoutHandler)
+                    .logoutSuccessHandler((request,response,authentication)-> SecurityContextHolder.clearContext())     
                 );
         return http.build();
     }

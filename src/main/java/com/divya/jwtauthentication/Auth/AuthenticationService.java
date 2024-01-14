@@ -33,8 +33,13 @@ public class AuthenticationService {
                                 .lastname(request.getLastname())
                                 .email(request.getEmail())
                                 .password(passwordEncoder.encode(request.getPassword()))
-                                .role(Role.USER)
+                                .role(Role.valueOf(request.getRole().toUpperCase()))
                                 .build();
+
+                System.out.println(request.getRole());
+                if (userRepository.existsByEmail(user.getEmail())) {
+                        throw new RuntimeException("Email already exists");
+                }
                 User savedUser = userRepository.save(user);
 
                 var jwt = jwtService.generateToken(user);
@@ -46,7 +51,7 @@ public class AuthenticationService {
 
 
         private void revokeAllUserTokens(User user)
-    {
+        {
         List<Token> validUserTokens = tokenRepository.findActiveTokensByUserId(user.getId());
         
         if(validUserTokens.isEmpty())
@@ -80,6 +85,8 @@ public class AuthenticationService {
                 var user = userRepository.findByEmail(request.getEmail())
                                 .orElseThrow();
                 var jwtToken = jwtService.generateToken(user);
+                revokeAllUserTokens(user);
+                saveUserToken(user,jwtToken);
                 return AuthenticationResponse.builder()
                                 .token(jwtToken)
                                 .build();
