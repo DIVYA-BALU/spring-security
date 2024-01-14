@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.divya.jwtauthentication.Exception.EmailAlreadyExistsException;
 import com.divya.jwtauthentication.Repository.TokenRepository;
 import com.divya.jwtauthentication.Repository.UserRepository;
 import com.divya.jwtauthentication.Service.JwtService;
@@ -27,7 +28,7 @@ public class AuthenticationService {
         private final AuthenticationManager authenticationManager;
         private final JwtService jwtService;
 
-        public AuthenticationResponse register(RegisterRequest request) {
+        public AuthenticationResponse register(RegisterRequest request){
                 User user = User.builder()
                                 .firstname(request.getFirstname())
                                 .lastname(request.getLastname())
@@ -38,7 +39,7 @@ public class AuthenticationService {
 
                 System.out.println(request.getRole());
                 if (userRepository.existsByEmail(user.getEmail())) {
-                        throw new RuntimeException("Email already exists");
+                        throw new EmailAlreadyExistsException("Email already exists");
                 }
                 User savedUser = userRepository.save(user);
 
