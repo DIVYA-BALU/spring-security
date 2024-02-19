@@ -14,4 +14,8 @@ public class RestExceptionHandler {
 
     }
 
+    @ExceptionHandler(value = RoleNotFoundException.class)
+    public ResponseEntity<?> handleRoleNotFoundException(){
+        return new ResponseEntity<>("Role not found",HttpStatus.BAD_REQUEST);
+    }
 }

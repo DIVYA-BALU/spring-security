@@ -1,15 +1,20 @@
 package com.divya.jwtauthentication.Users;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.divya.jwtauthentication.Model.Role;
+import com.divya.jwtauthentication.Model.RolePermissions;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,17 +28,26 @@ import lombok.NoArgsConstructor;
 @Document(value = "User")
 public class User implements UserDetails {
     @Id
-    private String id;
+    private String _id;
     private String firstname;
     private String lastname;
     private String email;
     private String password;
-    @Field(targetType = FieldType.STRING)
+
+    @DocumentReference(collection = "roles")
     private Role role;
+
+    @DocumentReference(collection = "role-permissions")
+    private Set<RolePermissions> permissions;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_"+role.name()));
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+
+        for(RolePermissions rolePermission: permissions){
+            authorities.add(new SimpleGrantedAuthority(rolePermission.getPermissionId().getPermission()));
+        }
+        return authorities;
     }
 
     @Override

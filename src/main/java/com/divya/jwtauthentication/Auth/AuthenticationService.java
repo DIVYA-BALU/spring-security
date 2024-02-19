@@ -1,25 +1,33 @@
 package com.divya.jwtauthentication.Auth;
 
 import java.util.List;
+import java.util.Set;
 
+import org.bson.types.ObjectId;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.divya.jwtauthentication.Exception.EmailAlreadyExistsException;
+import com.divya.jwtauthentication.Repository.RolePermissionsRepository;
+import com.divya.jwtauthentication.Repository.RoleRepository;
 import com.divya.jwtauthentication.Repository.TokenRepository;
 import com.divya.jwtauthentication.Repository.UserRepository;
 import com.divya.jwtauthentication.Service.JwtService;
-import com.divya.jwtauthentication.Users.Role;
+// import com.divya.jwtauthentication.Users.Role;
 import com.divya.jwtauthentication.Users.User;
 import com.divya.jwtauthentication.token.TokenType;
 import com.divya.jwtauthentication.token.Token;
+import com.divya.jwtauthentication.Model.Role;
+import com.divya.jwtauthentication.Model.RolePermissions;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
 
         private final UserRepository userRepository;
@@ -27,14 +35,19 @@ public class AuthenticationService {
         private final PasswordEncoder passwordEncoder;
         private final AuthenticationManager authenticationManager;
         private final JwtService jwtService;
+        private final RoleRepository roleRepository;
+        private final RolePermissionsRepository rolePermissionsRepository;
 
         public AuthenticationResponse register(RegisterRequest request){
+                Role role = roleRepository.findByRole(request.getRole().toLowerCase());
+                System.out.println("Role................"+role);
                 User user = User.builder()
                                 .firstname(request.getFirstname())
                                 .lastname(request.getLastname())
                                 .email(request.getEmail())
                                 .password(passwordEncoder.encode(request.getPassword()))
-                                .role(Role.valueOf(request.getRole().toUpperCase()))
+                                .role(role) 
+                                .permissions(getPermissions(role))
                                 .build();
 
                 System.out.println(request.getRole());
@@ -51,9 +64,21 @@ public class AuthenticationService {
         }
 
 
+        private Set<RolePermissions> getPermissions(Role role) {
+                ObjectId roleId = new ObjectId(role.get_id());
+                System.out.println(roleId);
+
+                List<RolePermissions> permissionsList = rolePermissionsRepository.findByRoleId(roleId);
+                System.out.println("Permissions............"+permissionsList);
+                Set<RolePermissions> permissions = Set.copyOf(permissionsList);
+                log.info("Permissions............"+permissions);
+                return permissions;
+        }
+
+
         private void revokeAllUserTokens(User user)
         {
-        List<Token> validUserTokens = tokenRepository.findActiveTokensByUserId(user.getId());
+        List<Token> validUserTokens = tokenRepository.findActiveTokensByUserId(user.get_id());
         
         if(validUserTokens.isEmpty())
         {
